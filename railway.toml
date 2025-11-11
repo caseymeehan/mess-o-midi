@@ -5,9 +5,8 @@ builder = "NIXPACKS"
 version = "8.2"
 
 [deploy]
-startCommand = "php -S 0.0.0.0:${PORT:-8080}"
+startCommand = "bash start-production.sh"
 
 [[volumes]]
 name = "saas-data"
 mountPath = "/app/database"
-

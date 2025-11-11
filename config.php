@@ -29,6 +29,7 @@ if (!file_exists(DB_PATH) || filesize(DB_PATH) === 0) {
         require __DIR__ . '/database/migrate_google_oauth.php';
         require __DIR__ . '/database/migrate_items.php';
         require __DIR__ . '/database/migrate_stripe.php';
+        require __DIR__ . '/database/migrate_midi_files.php';
         
         error_log('Database auto-initialization completed successfully');
     } catch (Exception $e) {
@@ -116,7 +117,9 @@ define('PRICING_PLANS', [
 
 // Python Service Configuration
 if (!defined('PYTHON_SERVICE_URL')) {
-    define('PYTHON_SERVICE_URL', getenv('PYTHON_SERVICE_URL') ?: 'http://localhost:5001');
+    // In production (Railway), both services run on same host
+    // Use 127.0.0.1 instead of localhost for better compatibility
+    define('PYTHON_SERVICE_URL', getenv('PYTHON_SERVICE_URL') ?: 'http://127.0.0.1:5001');
 }
 
 // Timezone
