@@ -1,12 +1,12 @@
 [phases.setup]
-nixPkgs = ["php82", "php82Packages.composer", "python3"]
+nixPkgs = ["php82", "php82Packages.composer", "python311", "python311Packages.pip", "python311Packages.virtualenv"]
 
 [phases.install]
 cmds = [
     "composer install --optimize-autoloader --no-interaction",
-    "cd python_service && python3 -m ensurepip --default-pip",
-    "cd python_service && python3 -m pip install --upgrade pip",
-    "cd python_service && python3 -m pip install -r requirements.txt"
+    "cd python_service && python3 -m venv venv",
+    "cd python_service && ./venv/bin/pip install --upgrade pip",
+    "cd python_service && ./venv/bin/pip install -r requirements.txt"
 ]
 
 [start]

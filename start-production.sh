@@ -13,7 +13,7 @@ PORT=${PORT:-8080}
 # Start Python MIDI service in the background
 echo "Starting Python MIDI service on port 5001..."
 cd python_service
-python3 app.py &
+./venv/bin/python app.py &
 PYTHON_PID=$!
 cd ..
 
