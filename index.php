@@ -21,6 +21,7 @@ $user = $isLoggedIn ? $auth->getCurrentUser() : null;
     <title><?php echo SITE_NAME; ?> - <?php echo SITE_TAGLINE; ?></title>
     
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -29,7 +30,7 @@ $user = $isLoggedIn ? $auth->getCurrentUser() : null;
         <div class="header-container">
             <div class="logo">
                 <a href="/">
-                    <span class="logo-icon">🎵</span>
+                    <img src="/assets/images/logo.png" alt="Mess o Midi" class="logo-icon">
                     <span class="logo-text"><?php echo SITE_NAME; ?></span>
                 </a>
             </div>
@@ -75,23 +76,20 @@ $user = $isLoggedIn ? $auth->getCurrentUser() : null;
                 <div class="hero-content">
                     <!-- Main Headline -->
                     <h1 class="hero-title">
-                        🎵 Create Music with AI-Powered MIDI Generation
+                        <img src="/assets/images/logo.png" alt="" class="hero-logo-inline"> Create Music with Randomness
                     </h1>
                     
                     <!-- Key Benefits as Bullet Points -->
                     <div class="benefits">
                         <div class="benefit">
-                            🎹 <strong>Generate Basslines</strong> - Create unique MIDI basslines instantly
+                            ⚡️ <strong>Spark New Ideas</strong> - Jump-start your next track in seconds
                         </div>
                         <div class="benefit">
-                            🎼 <strong>Multiple Tracks</strong> - Build complete songs with bass, chords, and drums
+                            🎲 <strong>Break Your Patterns</strong> - Escape creative ruts with unexpected combinations
                         </div>
                         <div class="benefit">
                             💾 <strong>Download & Use</strong> - Export MIDI files for your DAW
                         </div>
-                    <div class="benefit">
-                        ⚡️ <strong>Fast & Easy</strong> - Create professional music in minutes
-                    </div>
                     </div>
                 </div>
 
@@ -132,43 +130,43 @@ $user = $isLoggedIn ? $auth->getCurrentUser() : null;
     <!-- Features Section -->
     <section class="features-preview" id="features">
         <div class="container">
-            <h2 class="section-title">What's Included in This Template</h2>
+            <h2 class="section-title">Break Through Creative Blocks</h2>
             
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">🔐</div>
-                    <h3>Google OAuth Authentication</h3>
-                    <p>One-click sign-in with Google. Database-backed sessions with automatic user creation.</p>
+                    <div class="feature-icon">🎹</div>
+                    <h3>Stop Staring at Empty Projects</h3>
+                    <p>Jump-start your creativity with instant bassline generation. No more blank canvas anxiety—get musical ideas flowing in seconds.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">💳</div>
-                    <h3>Stripe Subscriptions</h3>
-                    <p>Complete billing system with checkout, webhooks, and subscription management built-in.</p>
+                    <div class="feature-icon">🎼</div>
+                    <h3>Break the Four-Chord Loop</h3>
+                    <p>Something new and fresh every time. Generate countless variations to keep your tracks exciting and break out of repetitive patterns.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Feature Gating</h3>
-                    <p>Plan-based limits (Free/Pro/Enterprise) with real-time usage tracking and upgrade prompts.</p>
+                    <div class="feature-icon">⚡</div>
+                    <h3>No Theory Required</h3>
+                    <p>Generate in-key MIDI that just works with your tracks. Focus on creativity, not cramming music theory textbooks.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Full Dashboard</h3>
-                    <p>User dashboard with CRUD operations, profile management, and usage widgets ready to customize.</p>
+                    <div class="feature-icon">🎚️</div>
+                    <h3>Export to Your DAW</h3>
+                    <p>Download production-ready MIDI files for Ableton, FL Studio, Logic, or any DAW. From idea to track without friction.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">🚀</div>
-                    <h3>Deploy in 10 Minutes</h3>
-                    <p>Choose your path: AI-assisted setup with Claude/Cursor, or follow step-by-step Railway guide. Both get you live fast.</p>
+                    <div class="feature-icon">🔄</div>
+                    <h3>Keep It Fresh</h3>
+                    <p>Generate multiple iterations until something clicks. Add variety to your tracks and keep listeners engaged from start to finish.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">📚</div>
-                    <h3>Complete Documentation</h3>
-                    <p>Step-by-step setup guide, code comments, and examples to get you started quickly.</p>
+                    <div class="feature-icon">💥</div>
+                    <h3>Less Thinking, More Making</h3>
+                    <p>Can't decide what comes next? Let randomness decide for you. Move forward fast and finish tracks you're proud of.</p>
                 </div>
             </div>
         </div>

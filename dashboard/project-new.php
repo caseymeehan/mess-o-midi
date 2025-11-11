@@ -289,7 +289,7 @@ $pageTitle = 'New Project';
     <header class="top-header">
         <div class="header-content">
             <a href="<?php echo url('/dashboard/'); ?>" class="site-logo">
-                <span>🎵</span>
+                <img src="/assets/images/logo.png" alt="Mess o Midi" style="width: 32px; height: 32px; vertical-align: middle;">
                 <span><?php echo SITE_NAME; ?></span>
             </a>
             <a href="<?php echo url('/dashboard/'); ?>" class="back-link">

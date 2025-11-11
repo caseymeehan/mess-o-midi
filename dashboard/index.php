@@ -225,6 +225,13 @@ $pageTitle = 'Projects';
 
         .new-btn:hover {
             background: #4f46e5;
+            color: white;
+        }
+
+        .new-btn:visited,
+        .new-btn:focus,
+        .new-btn:active {
+            color: white;
         }
 
         /* Items List */
@@ -597,7 +604,7 @@ $pageTitle = 'Projects';
     <header class="top-header">
         <div class="header-content">
             <a href="<?php echo url('/dashboard/'); ?>" class="site-logo">
-                <span>🎵</span>
+                <img src="/assets/images/logo.png" alt="Mess o Midi" style="width: 32px; height: 32px; vertical-align: middle;">
                 <span><?php echo SITE_NAME; ?></span>
             </a>
             
@@ -724,7 +731,7 @@ $pageTitle = 'Projects';
         <?php else: ?>
             <!-- Empty State -->
             <div class="empty-state">
-                <div class="empty-state-icon">🎵</div>
+                <div class="empty-state-icon"><img src="/assets/images/logo.png" alt="Mess o Midi" style="width: 64px; height: 64px;"></div>
                 <div class="empty-state-title">No projects yet</div>
                 <div class="empty-state-text">
                     Get started by creating your first MIDI project.<br>

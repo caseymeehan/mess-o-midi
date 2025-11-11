@@ -68,8 +68,9 @@ $plans = PRICING_PLANS;
             gap: 0.5rem;
         }
         
-        .site-logo::before {
-            content: "🎵";
+        .site-logo img {
+            width: 32px;
+            height: 32px;
         }
 
         .nav-links {
@@ -360,7 +361,7 @@ $plans = PRICING_PLANS;
     <div class="top-header">
         <div class="header-content">
             <a href="<?php echo $user ? url('/dashboard/') : url('/'); ?>" class="site-logo">
-                <span>🚀</span>
+                <img src="/assets/images/logo.png" alt="Mess o Midi">
                 <span><?php echo SITE_NAME; ?></span>
             </a>
             <div class="nav-links">
