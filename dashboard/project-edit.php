@@ -472,9 +472,14 @@ $pageTitle = 'Edit Project';
         <div class="midi-section">
             <div class="section-header">
                 <h2 class="section-title">MIDI Tracks</h2>
-                <button type="button" class="btn btn-success" onclick="generateBassline()" id="generateBtn">
-                    Generate Bassline
-                </button>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button type="button" class="btn btn-success" onclick="generateMidi('bass')" id="generateBassBtn">
+                        🎸 Generate Bassline
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="generateMidi('chords')" id="generateChordsBtn">
+                        🎹 Generate Chords
+                    </button>
+                </div>
             </div>
 
             <div class="midi-files-list" id="midiFilesList">
@@ -482,7 +487,7 @@ $pageTitle = 'Edit Project';
                     <div class="empty-state">
                         <div class="empty-state-icon">🎹</div>
                         <p>No MIDI files generated yet.</p>
-                        <p style="font-size: 0.875rem;">Click "Generate Bassline" to create your first MIDI track.</p>
+                        <p style="font-size: 0.875rem;">Click "Generate Bassline" or "Generate Chords" to create your first MIDI track.</p>
                     </div>
                 <?php else: ?>
                     <?php foreach ($midiFiles as $midiFile): ?>
@@ -515,9 +520,12 @@ $pageTitle = 'Edit Project';
             }, 300);
         }
 
-        async function generateBassline() {
-            const btn = document.getElementById('generateBtn');
+        async function generateMidi(type) {
+            // Determine which button was clicked
+            const btnId = type === 'bass' ? 'generateBassBtn' : 'generateChordsBtn';
+            const btn = document.getElementById(btnId);
             const originalText = btn.innerHTML;
+            const typeName = type === 'bass' ? 'bassline' : 'chords';
             
             // Disable button and show loading
             btn.disabled = true;
@@ -531,7 +539,7 @@ $pageTitle = 'Edit Project';
                     },
                     body: JSON.stringify({
                         project_id: <?php echo $projectId; ?>,
-                        type: 'bass'
+                        type: type
                     })
                 });
                 
@@ -541,13 +549,13 @@ $pageTitle = 'Edit Project';
                     // Reload page to show new MIDI file
                     window.location.reload();
                 } else {
-                    alert('Error: ' + (data.error || 'Failed to generate bassline'));
+                    alert('Error: ' + (data.error || `Failed to generate ${typeName}`));
                     btn.disabled = false;
                     btn.innerHTML = originalText;
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to generate bassline. Please try again.');
+                alert(`Failed to generate ${typeName}. Please try again.`);
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }

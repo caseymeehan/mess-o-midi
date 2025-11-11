@@ -90,6 +90,25 @@ try {
                 $options
             );
             break;
+        
+        case 'chords':
+        case 'chord':
+            $options = [];
+            
+            // Add optional parameters if provided
+            if (isset($data['scale'])) {
+                $options['scale'] = $data['scale'];
+            }
+            if (isset($data['rhythm'])) {
+                $options['rhythm'] = $data['rhythm'];
+            }
+            
+            $result = $midiGenerator->generateChordsForProject(
+                $user['id'],
+                $projectId,
+                $options
+            );
+            break;
             
         default:
             throw new Exception('Unsupported MIDI type: ' . $type);

@@ -9,6 +9,7 @@ import time
 import traceback
 from config import PORT, HOST, DEBUG, OUTPUT_DIR
 from generators import generate_bassline
+from generators.chords import generate_chords
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for PHP frontend
@@ -74,6 +75,63 @@ def generate_bass():
     
     except Exception as e:
         print(f"Error generating bassline: {str(e)}")
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/generate/chords', methods=['POST'])
+def generate_chords_endpoint():
+    """
+    Generate a chord progression MIDI file
+    
+    Request JSON:
+    {
+        "filename": "optional_filename.mid",
+        "scale": [40, 41, 43, 45, 47, 48, 50],  // optional
+        "rhythm": [0, 384, 768, ...]  // optional
+    }
+    
+    Response JSON:
+    {
+        "success": true,
+        "filepath": "path/to/file.mid",
+        "filename": "filename.mid"
+    }
+    """
+    try:
+        data = request.get_json() or {}
+        
+        # Generate unique filename if not provided
+        filename = data.get('filename')
+        if not filename:
+            timestamp = int(time.time())
+            filename = f"chords_{timestamp}.mid"
+        
+        # Ensure .mid extension
+        if not filename.endswith('.mid'):
+            filename += '.mid'
+        
+        # Full path for the file
+        filepath = os.path.join(OUTPUT_DIR, filename)
+        
+        # Get optional parameters
+        scale = data.get('scale')
+        rhythm = data.get('rhythm')
+        
+        # Generate the chords
+        result_path = generate_chords(filepath, scale=scale, rhythm=rhythm)
+        
+        return jsonify({
+            'success': True,
+            'filepath': result_path,
+            'filename': filename
+        })
+    
+    except Exception as e:
+        print(f"Error generating chords: {str(e)}")
         traceback.print_exc()
         return jsonify({
             'success': False,

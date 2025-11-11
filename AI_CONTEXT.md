@@ -2,7 +2,7 @@
 
 **Purpose:** This document provides AI assistants with complete context about the project's current state, architecture, and roadmap.
 
-**Last Updated:** November 11, 2025
+**Last Updated:** November 11, 2025 (Chord Generator Integrated)
 
 ---
 
@@ -35,16 +35,18 @@
 **Python Service (Flask on port 5001)**
 - `app.py` - Flask API server
 - `generators/bass.py` - Bassline generator (ported from existing code)
+- `generators/chords.py` - Complex chord progression generator (ported from complex_chords.py)
 - `generators/midi_tools.py` - MIDI utilities (data_to_midi, create_file)
 - Health check endpoint: `/health`
 - Bassline generation endpoint: `/api/generate/bass`
+- Chord generation endpoint: `/api/generate/chords`
 - Note: Changed from port 5000 to 5001 to avoid macOS AirPlay conflict
 
 **Frontend**
 - Dashboard with projects list (`dashboard/index.php`)
 - Project creation page (`dashboard/project-new.php`)
 - Project edit page with MIDI tracks section (`dashboard/project-edit.php`)
-- "Generate Bassline" button with AJAX
+- "🎸 Generate Bassline" and "🎹 Generate Chords" buttons with AJAX
 - Download functionality for generated MIDI files
 - Full branding as "Mess o Midi" 🎵
 
@@ -61,8 +63,9 @@
 ### Test Results
 ```
 ✅ Python service connection: PASS
-✅ MIDI file generation: PASS
-✅ File saved to disk: PASS (244 bytes typical)
+✅ Bassline generation: PASS (244 bytes typical)
+✅ Chord generation: PASS (804 bytes typical)
+✅ File saved to disk: PASS
 ✅ Web server response: PASS
 ✅ End-to-end flow: PASS
 ```
@@ -309,6 +312,32 @@ Response:
 }
 ```
 
+#### Generate Chords
+```
+POST /api/generate/chords
+Content-Type: application/json
+
+Request:
+{
+  "filename": "my_chords.mid",
+  "scale": [40, 41, 43, 45, 47, 48, 50],  // optional, MIDI note numbers for bass notes
+  "rhythm": [0, 384, 768, ...]             // optional, timing in ticks
+}
+
+Response:
+{
+  "success": true,
+  "filepath": "/full/path/to/file.mid",
+  "filename": "my_chords.mid"
+}
+
+Notes:
+- Generates 5-voice complex chord progressions
+- Bass, root, harmony1, harmony2, harmony3
+- Random intervals (2-4 semitones) with musical intelligence
+- All notes fit to C major scale
+```
+
 ### MIDI File Format
 - Files saved to: `uploads/midi/`
 - Naming: `{userId}_{projectId}_{type}_{timestamp}.mid`
@@ -323,9 +352,9 @@ Response:
 
 These generators already exist in `/Programming_Music_New/` and just need integration:
 
-1. **Chord Progression Generator**
-   - Source: `chords.py` or `complex_chords.py`
-   - Complexity: Easy (follow existing pattern)
+1. ✅ **Chord Progression Generator** - COMPLETED
+   - Source: `complex_chords.py`
+   - Status: Integrated and working
    - Impact: High (key feature for music production)
 
 2. **Drum/Kick Pattern Generator**
