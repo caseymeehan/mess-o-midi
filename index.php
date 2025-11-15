@@ -76,7 +76,7 @@ $user = $isLoggedIn ? $auth->getCurrentUser() : null;
                 <div class="hero-content">
                     <!-- Main Headline -->
                     <h1 class="hero-title">
-                        <img src="/assets/images/logo.png" alt="" class="hero-logo-inline"> Create Music with Randomness
+                        Never Start a Track from Scratch Again
                     </h1>
                     
                     <!-- Key Benefits as Bullet Points -->
@@ -105,7 +105,7 @@ $user = $isLoggedIn ? $auth->getCurrentUser() : null;
                         </div>
                     <?php else: ?>
                         <div class="signup-bubble">
-                            🆓 Free Beta - Sign in with Google to get started!
+                            💥 Free Beta - Sign in with Google to get started!
                         </div>
                         
                         <div class="signup-form">
