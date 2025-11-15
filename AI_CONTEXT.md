@@ -346,6 +346,152 @@ Notes:
 
 ---
 
+## Production Deployment (Railway)
+
+This application runs as a **multi-service deployment**: PHP web server + Python Flask API. Here's what we learned deploying to Railway.
+
+### Architecture Overview
+
+**Two Services on One Dyno:**
+- **PHP Web Server** - Runs on Railway's `PORT` (8080) - handles HTTP requests from internet
+- **Python Flask API** - Runs on port 5001 (internal only) - handles MIDI generation requests from PHP
+
+**Key Files:**
+- `nixpacks.toml` - Build configuration (what packages to install, how to build)
+- `railway.toml` - Railway-specific config (what command to run)
+- `start-production.sh` - Orchestrates starting both services
+
+### Critical Lessons Learned
+
+#### 1. Python + Nix = Use Virtual Environments
+
+**Problem:** Nix-based systems (which nixpacks uses) mark Python as "externally managed", blocking direct pip installs.
+
+**Error you'll see:**
+```
+error: externally-managed-environment
+× This environment is externally managed
+```
+
+**Solution:** Always use Python virtual environments in nixpacks:
+
+```toml
+# nixpacks.toml
+[phases.install]
+nixPkgs = ["python311", "python311Packages.pip", "python311Packages.virtualenv"]
+cmds = [
+  "cd python_service && python3 -m venv venv",
+  "cd python_service && ./venv/bin/pip install --upgrade pip",
+  "cd python_service && ./venv/bin/pip install -r requirements.txt"
+]
+```
+
+**Why this works:**
+- Virtual environments are isolated from system Python
+- Nix's "externally managed" restriction doesn't apply inside venvs
+- Dependencies install cleanly without permission issues
+
+**Language-specific notes:**
+- ⚠️ This issue is **Python-specific** - Nix's externally-managed environment policy applies to Python
+- Node.js, Ruby, Go, etc. have different Nix packaging approaches
+- However, the pattern of "isolate dependencies in project directory" is universal best practice
+
+#### 2. Port Management in Multi-Service Deployments
+
+**Problem:** Railway injects `PORT` environment variable (8080). If multiple services read this, they conflict.
+
+**Error you'll see:**
+```
+Failed to listen on 0.0.0.0:8080 (reason: Address already in use)
+```
+
+**Solution:** Carefully manage which service gets which port:
+
+```bash
+# start-production.sh
+#!/bin/bash
+
+# Save Railway's PORT for PHP
+PHP_PORT=${PORT:-8080}
+
+# Clear PORT so Python uses its default (5001)
+unset PORT
+
+# Start Python in background on 5001
+cd python_service && ./venv/bin/python app.py &
+
+# Start PHP in foreground on Railway's PORT
+php -S 0.0.0.0:$PHP_PORT
+```
+
+**Why this works:**
+- PHP needs to be on Railway's public port (8080) to receive internet traffic
+- Python only needs to be accessible internally on localhost
+- By unsetting `PORT`, Python's `config.py` falls back to its default (5001)
+- No port conflict!
+
+**Universal lessons (applies to ANY language combo):**
+- ✅ **Port conflicts** happen in any multi-service setup (Node+Python, Go+Ruby, etc.)
+- ✅ **Environment variable precedence** matters - understand what your frameworks read
+- ✅ **Service orchestration** - one foreground (receives traffic), others background (internal)
+- ✅ **Explicit > Implicit** - explicitly assign ports, don't rely on defaults when deploying
+
+#### 3. Build vs Runtime Phases
+
+**Build Phase (nixpacks.toml):**
+- Installs system packages (Python, pip, virtualenv)
+- Installs dependencies (`pip install -r requirements.txt`)
+- Runs once when you deploy
+- Can take 5-20 minutes first time (especially with numpy/scipy)
+
+**Runtime Phase (start-production.sh):**
+- Starts your services
+- Runs every time the dyno restarts
+- Should be fast (< 10 seconds)
+
+**Best practice:**
+- Heavy installs → build phase
+- Service startup → runtime phase
+- Never install packages in start scripts
+
+#### 4. Debugging Multi-Service Deployments
+
+**Railway logs show both services mixed together:**
+- Look for "Starting..." messages from each service
+- Check which ports each binds to
+- Look for "Address already in use" errors
+- Verify environment variables being read
+
+**Quick health checks:**
+```bash
+# Check if Python is responding
+curl http://localhost:5001/health
+
+# Check if PHP is responding
+curl http://localhost:8080
+```
+
+### Where to Save This Knowledge
+
+**For this project:**
+- ✅ This section in `AI_CONTEXT.md` (you're reading it!)
+- ✅ Comments in `nixpacks.toml` explaining the venv approach
+- ✅ Comments in `start-production.sh` explaining port management
+
+**For future projects:**
+- Save `nixpacks.toml` as a template for "PHP + Python" deployments
+- Save `start-production.sh` as a template for multi-service startup
+- Document in your personal knowledge base / notes system
+- Consider creating a "deployment patterns" repo with common configs
+
+**Quick reference for next time:**
+1. Python on Railway? → Use venv in nixpacks
+2. Multiple services? → Manage ports explicitly in startup script
+3. One service must be foreground (receives traffic), others background
+4. First build with Python/numpy is slow (15-20 min), subsequent builds are fast
+
+---
+
 ## Roadmap
 
 ### High Priority - Ready to Add

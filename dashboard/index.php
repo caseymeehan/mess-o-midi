@@ -632,7 +632,7 @@ $pageTitle = 'Projects';
                 
                 <div class="dropdown-menu" id="accountDropdown">
                     <a href="<?php echo url('/dashboard/profile.php'); ?>" class="dropdown-item">Profile & Billing</a>
-                    <a href="<?php echo url('/pricing.php'); ?>" class="dropdown-item">Pricing</a>
+                    <a href="https://blog.mess-o-midi.com/" class="dropdown-item" target="_blank">Blog</a>
                     <a href="<?php echo url('/auth/logout.php'); ?>" class="dropdown-item danger">Log Out</a>
                 </div>
             </div>

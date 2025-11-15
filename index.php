@@ -45,11 +45,11 @@ $user = $isLoggedIn ? $auth->getCurrentUser() : null;
                 <div class="nav-menu" id="navMenu">
                     <?php if ($isLoggedIn): ?>
                         <a href="dashboard/" class="nav-item">📊 Dashboard</a>
-                        <a href="pricing.php" class="nav-item">💳 Pricing</a>
+                        <a href="https://blog.mess-o-midi.com/" class="nav-item" target="_blank">📝 Blog</a>
                         <a href="auth/logout.php" class="nav-item">🚪 Log out</a>
                     <?php else: ?>
                         <a href="#features" class="nav-item">✨ Features</a>
-                        <a href="pricing.php" class="nav-item">💳 Pricing</a>
+                        <a href="https://blog.mess-o-midi.com/" class="nav-item" target="_blank">📝 Blog</a>
                         <a href="auth/google-login.php" class="nav-item nav-item-cta">👋 Sign in with Google</a>
                     <?php endif; ?>
                 </div>
@@ -105,11 +105,11 @@ $user = $isLoggedIn ? $auth->getCurrentUser() : null;
                         </div>
                     <?php else: ?>
                         <div class="signup-bubble">
-                            ✨ Try the demo - Sign in with Google OAuth!
+                            🆓 Free Beta - Sign in with Google to get started!
                         </div>
                         
                         <div class="signup-form">
-                            <a href="auth/google-login.php" class="btn btn-cta">Try Demo Now →</a>
+                            <a href="auth/google-login.php" class="btn btn-cta">Join Free Beta →</a>
                             <a href="auth/google-login.php" class="btn btn-google">
                                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M17.64 9.20443C17.64 8.56625 17.5827 7.95262 17.4764 7.36353H9V10.8449H13.8436C13.635 11.9699 13.0009 12.9231 12.0477 13.5613V15.8194H14.9564C16.6582 14.2526 17.64 11.9453 17.64 9.20443Z" fill="#4285F4"/>
@@ -181,19 +181,12 @@ $user = $isLoggedIn ? $auth->getCurrentUser() : null;
                     <ul>
                         <li><a href="/">Home</a></li>
                         <li><a href="#features">Features</a></li>
+                        <li><a href="https://blog.mess-o-midi.com/" target="_blank">Blog</a></li>
                         <?php if ($isLoggedIn): ?>
                             <li><a href="/dashboard/">Dashboard</a></li>
                         <?php else: ?>
                             <li><a href="/auth/google-login.php">Sign In</a></li>
                         <?php endif; ?>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
                     </ul>
                 </div>
             </div>
