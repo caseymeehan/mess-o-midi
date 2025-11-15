@@ -7,7 +7,8 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 // Database configuration
-define('DB_PATH', __DIR__ . '/database/saas.db');
+// NOTE: Database file is in /data (mounted volume) separate from migration scripts in /database
+define('DB_PATH', __DIR__ . '/data/saas.db');
 
 // Auto-initialize database if it doesn't exist (Railway deployment support)
 if (!file_exists(DB_PATH) || filesize(DB_PATH) === 0) {

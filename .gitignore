@@ -5,6 +5,7 @@ vendor/
 # Database
 /database/saas.db
 /database/*.db
+/data/*.db
 
 # Logs
 *.log

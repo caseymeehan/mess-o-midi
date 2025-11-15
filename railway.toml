@@ -9,4 +9,4 @@ startCommand = "bash start-production.sh"
 
 [[volumes]]
 name = "saas-data"
-mountPath = "/app/database"
+mountPath = "/app/data"
