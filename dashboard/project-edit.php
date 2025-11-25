@@ -405,6 +405,161 @@ $pageTitle = 'Edit Project';
                 flex: 1;
             }
         }
+
+        /* Chord Style Modal */
+        .chord-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .chord-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chord-modal-content {
+            background-color: white;
+            margin: auto;
+            padding: 0;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .chord-modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chord-modal-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .chord-modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .chord-modal-close:hover {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .chord-modal-body {
+            padding: 2rem;
+        }
+
+        .chord-modal-description {
+            color: #4b5563;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .chord-info-icon {
+            display: inline-block;
+            margin-left: 0.5rem;
+            cursor: help;
+            font-size: 1rem;
+            color: #6366f1;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .chord-info-icon:hover {
+            opacity: 1;
+        }
+
+        .chord-button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .chord-button-group .btn {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .btn-chord-simple {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .btn-chord-simple:hover {
+            background: #7c3aed;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-chord-complex {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-chord-complex:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .chord-modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+
+            .chord-button-group {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
@@ -476,7 +631,7 @@ $pageTitle = 'Edit Project';
                     <button type="button" class="btn btn-success" onclick="generateMidi('bass')" id="generateBassBtn">
                         🎸 Generate Bassline
                     </button>
-                    <button type="button" class="btn btn-success" onclick="generateMidi('chords')" id="generateChordsBtn">
+                    <button type="button" class="btn btn-success" onclick="openChordStyleModal()" id="generateChordsBtn">
                         🎹 Generate Chords
                     </button>
                 </div>
@@ -511,6 +666,30 @@ $pageTitle = 'Edit Project';
         </div>
     </main>
 
+    <!-- Chord Style Selection Modal -->
+    <div id="chordStyleModal" class="chord-modal">
+        <div class="chord-modal-content">
+            <div class="chord-modal-header">
+                <h3>Choose Chord Style</h3>
+                <button class="chord-modal-close" onclick="closeChordStyleModal()">&times;</button>
+            </div>
+            <div class="chord-modal-body">
+                <p class="chord-modal-description">
+                    <strong>Simple:</strong> Traditional chord progressions • <strong>Complex:</strong> Jazz-like, experimental harmonies
+                    <span class="chord-info-icon" title="Simple chords use clean triads (root, third, fifth, octave). Complex chords use dense, layered harmonies with random intervals for a more experimental sound.">ℹ️</span>
+                </p>
+                <div class="chord-button-group">
+                    <button type="button" class="btn btn-chord-simple" onclick="selectChordStyle('simple-chords')">
+                        🎵 Simple Chords
+                    </button>
+                    <button type="button" class="btn btn-chord-complex" onclick="selectChordStyle('complex-chords')">
+                        🎹 Complex Chords
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function dismissFlash(button) {
             const flashMessage = button.closest('.flash-message');
@@ -520,12 +699,54 @@ $pageTitle = 'Edit Project';
             }, 300);
         }
 
+        // Modal functions
+        function openChordStyleModal() {
+            const modal = document.getElementById('chordStyleModal');
+            modal.classList.add('active');
+        }
+
+        function closeChordStyleModal() {
+            const modal = document.getElementById('chordStyleModal');
+            modal.classList.remove('active');
+        }
+
+        function selectChordStyle(chordType) {
+            closeChordStyleModal();
+            generateMidi(chordType);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('chordStyleModal');
+            if (event.target === modal) {
+                closeChordStyleModal();
+            }
+        }
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeChordStyleModal();
+            }
+        });
+
         async function generateMidi(type) {
-            // Determine which button was clicked
-            const btnId = type === 'bass' ? 'generateBassBtn' : 'generateChordsBtn';
+            // Determine which button was clicked and friendly name
+            let btnId, typeName;
+            
+            if (type === 'bass') {
+                btnId = 'generateBassBtn';
+                typeName = 'bassline';
+            } else if (type === 'simple-chords') {
+                btnId = 'generateChordsBtn';
+                typeName = 'simple chords';
+            } else if (type === 'complex-chords') {
+                btnId = 'generateChordsBtn';
+                typeName = 'complex chords';
+            }
+            
             const btn = document.getElementById(btnId);
             const originalText = btn.innerHTML;
-            const typeName = type === 'bass' ? 'bassline' : 'chords';
             
             // Disable button and show loading
             btn.disabled = true;

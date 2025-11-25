@@ -8,8 +8,7 @@ import os
 import time
 import traceback
 from config import PORT, HOST, DEBUG, OUTPUT_DIR
-from generators import generate_bassline
-from generators.chords import generate_chords
+from generators import generate_bassline, generate_complex_chords, generate_simple_chords
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for PHP frontend
@@ -82,10 +81,10 @@ def generate_bass():
         }), 500
 
 
-@app.route('/api/generate/chords', methods=['POST'])
-def generate_chords_endpoint():
+@app.route('/api/generate/complex-chords', methods=['POST'])
+def generate_complex_chords_endpoint():
     """
-    Generate a chord progression MIDI file
+    Generate a complex chord progression MIDI file
     
     Request JSON:
     {
@@ -108,7 +107,7 @@ def generate_chords_endpoint():
         filename = data.get('filename')
         if not filename:
             timestamp = int(time.time())
-            filename = f"chords_{timestamp}.mid"
+            filename = f"complex_chords_{timestamp}.mid"
         
         # Ensure .mid extension
         if not filename.endswith('.mid'):
@@ -121,8 +120,8 @@ def generate_chords_endpoint():
         scale = data.get('scale')
         rhythm = data.get('rhythm')
         
-        # Generate the chords
-        result_path = generate_chords(filepath, scale=scale, rhythm=rhythm)
+        # Generate the complex chords
+        result_path = generate_complex_chords(filepath, scale=scale, rhythm=rhythm)
         
         return jsonify({
             'success': True,
@@ -131,7 +130,64 @@ def generate_chords_endpoint():
         })
     
     except Exception as e:
-        print(f"Error generating chords: {str(e)}")
+        print(f"Error generating complex chords: {str(e)}")
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/generate/simple-chords', methods=['POST'])
+def generate_simple_chords_endpoint():
+    """
+    Generate a simple triad chord progression MIDI file
+    
+    Request JSON:
+    {
+        "filename": "optional_filename.mid",
+        "scale": [40, 41, 43, 45, 47, 48, 50],  // optional
+        "rhythm": [0, 384, 768, ...]  // optional
+    }
+    
+    Response JSON:
+    {
+        "success": true,
+        "filepath": "path/to/file.mid",
+        "filename": "filename.mid"
+    }
+    """
+    try:
+        data = request.get_json() or {}
+        
+        # Generate unique filename if not provided
+        filename = data.get('filename')
+        if not filename:
+            timestamp = int(time.time())
+            filename = f"simple_chords_{timestamp}.mid"
+        
+        # Ensure .mid extension
+        if not filename.endswith('.mid'):
+            filename += '.mid'
+        
+        # Full path for the file
+        filepath = os.path.join(OUTPUT_DIR, filename)
+        
+        # Get optional parameters
+        scale = data.get('scale')
+        rhythm = data.get('rhythm')
+        
+        # Generate the simple chords
+        result_path = generate_simple_chords(filepath, scale=scale, rhythm=rhythm)
+        
+        return jsonify({
+            'success': True,
+            'filepath': result_path,
+            'filename': filename
+        })
+    
+    except Exception as e:
+        print(f"Error generating simple chords: {str(e)}")
         traceback.print_exc()
         return jsonify({
             'success': False,

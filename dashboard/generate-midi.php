@@ -91,8 +91,8 @@ try {
             );
             break;
         
-        case 'chords':
-        case 'chord':
+        case 'complex-chords':
+        case 'complex_chords':
             $options = [];
             
             // Add optional parameters if provided
@@ -103,7 +103,26 @@ try {
                 $options['rhythm'] = $data['rhythm'];
             }
             
-            $result = $midiGenerator->generateChordsForProject(
+            $result = $midiGenerator->generateComplexChordsForProject(
+                $user['id'],
+                $projectId,
+                $options
+            );
+            break;
+        
+        case 'simple-chords':
+        case 'simple_chords':
+            $options = [];
+            
+            // Add optional parameters if provided
+            if (isset($data['scale'])) {
+                $options['scale'] = $data['scale'];
+            }
+            if (isset($data['rhythm'])) {
+                $options['rhythm'] = $data['rhythm'];
+            }
+            
+            $result = $midiGenerator->generateSimpleChordsForProject(
                 $user['id'],
                 $projectId,
                 $options
