@@ -218,6 +218,15 @@ $pageTitle = 'Edit Project';
             cursor: not-allowed;
         }
 
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
         /* MIDI Tracks Section */
         .midi-section {
             background: white;
@@ -253,6 +262,7 @@ $pageTitle = 'Edit Project';
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
         .midi-file-info {
@@ -631,6 +641,10 @@ $pageTitle = 'Edit Project';
                     <button type="button" class="btn btn-success" onclick="generateMidi('bass')" id="generateBassBtn">
                         🎸 Generate Bassline
                     </button>
+                    <button type="button" class="btn btn-success" onclick="triggerUploadChords()" id="uploadChordsBtn">
+                        📤 Upload Chords
+                    </button>
+                    <input type="file" id="chordFileInput" accept=".mid,.midi" style="display: none;" onchange="handleChordFileSelect(event)">
                     <button type="button" class="btn btn-success" onclick="openChordStyleModal()" id="generateChordsBtn">
                         🎹 Generate Chords
                     </button>
@@ -645,10 +659,27 @@ $pageTitle = 'Edit Project';
                         <p style="font-size: 0.875rem;">Click "Generate Bassline" or "Generate Chords" to create your first MIDI track.</p>
                     </div>
                 <?php else: ?>
-                    <?php foreach ($midiFiles as $midiFile): ?>
-                        <div class="midi-file-item">
+                    <?php foreach ($midiFiles as $midiFile): 
+                        // Format file type display name
+                        $displayType = $midiFile['file_type'];
+                        if ($midiFile['file_type'] === 'uploaded_chords') {
+                            // Extract number from filename
+                            if (preg_match('/_uploaded_chords_(\d+)\.mid$/', $midiFile['file_path'], $matches)) {
+                                $displayType = 'Uploaded Chords ' . $matches[1];
+                            } else {
+                                $displayType = 'Uploaded Chords';
+                            }
+                        } elseif ($midiFile['file_type'] === 'simple_chords') {
+                            $displayType = 'Simple Chords';
+                        } elseif ($midiFile['file_type'] === 'complex_chords') {
+                            $displayType = 'Complex Chords';
+                        } elseif ($midiFile['file_type'] === 'bass') {
+                            $displayType = 'Bass';
+                        }
+                    ?>
+                        <div class="midi-file-item" data-file-id="<?php echo $midiFile['id']; ?>">
                             <div class="midi-file-info">
-                                <div class="midi-file-type"><?php echo escape($midiFile['file_type']); ?></div>
+                                <div class="midi-file-type"><?php echo escape($displayType); ?></div>
                                 <div class="midi-file-date">
                                     Created: <?php echo date('M j, Y g:i A', strtotime($midiFile['created_at'])); ?>
                                 </div>
@@ -658,6 +689,11 @@ $pageTitle = 'Edit Project';
                                    class="btn btn-secondary btn-small">
                                     Download
                                 </a>
+                                <button type="button" 
+                                        class="btn btn-danger btn-small" 
+                                        onclick="deleteMidiFile(<?php echo $midiFile['id']; ?>, '<?php echo addslashes($displayType); ?>')">
+                                    Delete
+                                </button>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -729,6 +765,108 @@ $pageTitle = 'Edit Project';
                 closeChordStyleModal();
             }
         });
+
+        // Upload Chords functionality
+        function triggerUploadChords() {
+            document.getElementById('chordFileInput').click();
+        }
+
+        async function handleChordFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file extension
+            const fileName = file.name.toLowerCase();
+            if (!fileName.endsWith('.mid') && !fileName.endsWith('.midi')) {
+                alert('Please select a MIDI file (.mid or .midi)');
+                event.target.value = ''; // Reset input
+                return;
+            }
+
+            // Validate file size (50KB)
+            if (file.size > 50 * 1024) {
+                alert('File is too large. Maximum size is 50KB.');
+                event.target.value = ''; // Reset input
+                return;
+            }
+
+            const btn = document.getElementById('uploadChordsBtn');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Uploading...';
+
+            try {
+                const formData = new FormData();
+                formData.append('chord_file', file);
+                formData.append('project_id', <?php echo $projectId; ?>);
+
+                const response = await fetch('<?php echo url("/dashboard/upload-chords.php"); ?>', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Reload page to show new file
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + (data.error || 'Failed to upload chord file'));
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to upload chord file. Please try again.');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            } finally {
+                event.target.value = ''; // Reset input
+            }
+        }
+
+        // Delete MIDI file functionality
+        async function deleteMidiFile(fileId, displayName) {
+            if (!confirm(`Are you sure you want to delete "${displayName}"? This action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('<?php echo url("/dashboard/delete-midi.php"); ?>', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        file_id: fileId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Remove the file item from the DOM with animation
+                    const fileItem = document.querySelector(`[data-file-id="${fileId}"]`);
+                    if (fileItem) {
+                        fileItem.style.opacity = '0';
+                        fileItem.style.transform = 'translateX(-20px)';
+                        setTimeout(() => {
+                            fileItem.remove();
+                            // Check if there are no more files
+                            const midiList = document.getElementById('midiFilesList');
+                            if (midiList.querySelectorAll('.midi-file-item').length === 0) {
+                                window.location.reload();
+                            }
+                        }, 300);
+                    }
+                } else {
+                    alert('Error: ' + (data.error || 'Failed to delete MIDI file'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to delete MIDI file. Please try again.');
+            }
+        }
 
         async function generateMidi(type) {
             // Determine which button was clicked and friendly name

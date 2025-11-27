@@ -51,7 +51,17 @@ try {
     
     // Prepare filename for download
     $filename = basename($filepath);
-    $downloadName = $project['title'] . '_' . $midiFile['file_type'] . '.mid';
+    
+    // Format file type for download name
+    $fileTypeDisplay = $midiFile['file_type'];
+    if ($midiFile['file_type'] === 'uploaded_chords') {
+        // Extract number from filename for uploaded chords
+        if (preg_match('/_uploaded_chords_(\d+)\.mid$/', $midiFile['file_path'], $matches)) {
+            $fileTypeDisplay = 'uploaded_chords_' . $matches[1];
+        }
+    }
+    
+    $downloadName = $project['title'] . '_' . $fileTypeDisplay . '.mid';
     // Clean filename
     $downloadName = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $downloadName);
     

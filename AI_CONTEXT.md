@@ -2,7 +2,7 @@
 
 **Purpose:** This document provides AI assistants with complete context about the project's current state, architecture, and roadmap.
 
-**Last Updated:** November 11, 2025 (Chord Generator Integrated)
+**Last Updated:** November 24, 2025 (Simple/Complex Chords + Upload Feature In Progress)
 
 ---
 
@@ -35,18 +35,21 @@
 **Python Service (Flask on port 5001)**
 - `app.py` - Flask API server
 - `generators/bass.py` - Bassline generator (ported from existing code)
-- `generators/chords.py` - Complex chord progression generator (ported from complex_chords.py)
+- `generators/complex_chords.py` - Jazz-like chord progressions with random intervals
+- `generators/simple_chords.py` - Traditional triad chord progressions
 - `generators/midi_tools.py` - MIDI utilities (data_to_midi, create_file)
 - Health check endpoint: `/health`
 - Bassline generation endpoint: `/api/generate/bass`
-- Chord generation endpoint: `/api/generate/chords`
+- Chord generation endpoints: `/api/generate/complex-chords`, `/api/generate/simple-chords`
 - Note: Changed from port 5000 to 5001 to avoid macOS AirPlay conflict
 
 **Frontend**
 - Dashboard with projects list (`dashboard/index.php`)
 - Project creation page (`dashboard/project-new.php`)
 - Project edit page with MIDI tracks section (`dashboard/project-edit.php`)
-- "🎸 Generate Bassline" and "🎹 Generate Chords" buttons with AJAX
+- "🎸 Generate Bassline" button with AJAX
+- "🎹 Generate Chords" button opens modal dialog with Simple/Complex options
+- Modal dialog with musical descriptions and info tooltips
 - Download functionality for generated MIDI files
 - Full branding as "Mess o Midi" 🎵
 
@@ -494,29 +497,45 @@ curl http://localhost:8080
 
 ## Roadmap
 
+### Recently Completed ✅
+
+1. **Simple & Complex Chord Progression Generator** - COMPLETED (Nov 24, 2025)
+   - Source: `complex_chords.py` and `simple_chords.py`
+   - Features:
+     - Modal dialog for chord style selection
+     - Simple: Traditional triads (root, third, fifth, octave)
+     - Complex: Jazz-like harmonies with random intervals
+   - Status: Deployed to production
+   - Impact: High (key feature for music production)
+
+### In Progress 🚧
+
+2. **Upload Chords Feature** - IN PROGRESS
+   - Allow users to upload their own chord MIDI files
+   - Multi-file support with incremental naming (uploaded_chords_1, uploaded_chords_2, etc.)
+   - File validation (< 50KB, .mid extension, MIDI header check)
+   - Delete functionality for all MIDI files
+   - Foundation for advanced generators (melody, fit-to-chords)
+   - Impact: High (enables chord-based generation features)
+
 ### High Priority - Ready to Add
 
 These generators already exist in `/Programming_Music_New/` and just need integration:
 
-1. ✅ **Chord Progression Generator** - COMPLETED
-   - Source: `complex_chords.py`
-   - Status: Integrated and working
-   - Impact: High (key feature for music production)
-
-2. **Drum/Kick Pattern Generator**
+3. **Drum/Kick Pattern Generator**
    - Source: `kick_pattern.py` or `multiple_kick_patterns.py`
    - Complexity: Easy
    - Impact: High (rhythm is essential)
 
-3. **Melody/Motif Generator**
+4. **Melody/Motif Generator**
    - Source: `motif.py` or `multiple-motifs.py`
-   - Complexity: Easy
+   - Complexity: Easy (but requires uploaded chords)
    - Impact: Medium-High
 
-4. **Fit to Chords Generator**
+5. **Fit to Chords Generator**
    - Source: `fit_to_chords.py`
-   - Complexity: Medium (requires chord context)
-   - Impact: High (advanced feature)
+   - Complexity: Medium (requires chord context from uploaded files)
+   - Impact: High (advanced feature - adjusts melodies to fit chords)
 
 ### Medium Priority - Enhancement Features
 
