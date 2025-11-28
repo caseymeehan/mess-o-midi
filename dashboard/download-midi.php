@@ -52,18 +52,28 @@ try {
     // Prepare filename for download
     $filename = basename($filepath);
     
-    // Format file type for download name
-    $fileTypeDisplay = $midiFile['file_type'];
-    if ($midiFile['file_type'] === 'uploaded_chords') {
-        // Extract number from filename for uploaded chords
-        if (preg_match('/_uploaded_chords_(\d+)\.mid$/', $midiFile['file_path'], $matches)) {
-            $fileTypeDisplay = 'uploaded_chords_' . $matches[1];
+    // Check if custom display name exists
+    if (!empty($midiFile['display_name'])) {
+        // Use custom display name
+        $downloadName = $midiFile['display_name'] . '.mid';
+    } else {
+        // Format file type for download name (default behavior)
+        $fileTypeDisplay = $midiFile['file_type'];
+        
+        // Extract number from filename for all file types
+        if (preg_match('/_(\d+)\.mid$/', $midiFile['file_path'], $matches)) {
+            $number = $matches[1];
+            // Format the type name nicely
+            $typeName = str_replace('_', ' ', $midiFile['file_type']);
+            $typeName = ucwords($typeName);
+            $fileTypeDisplay = $typeName . ' ' . $number;
         }
+        
+        $downloadName = $project['title'] . ' - ' . $fileTypeDisplay . '.mid';
     }
     
-    $downloadName = $project['title'] . '_' . $fileTypeDisplay . '.mid';
-    // Clean filename
-    $downloadName = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $downloadName);
+    // Clean filename (remove dangerous characters but keep spaces and dashes)
+    $downloadName = preg_replace('/[\/\\\\:*?"<>|]/', '_', $downloadName);
     
     // Set headers for file download
     header('Content-Type: audio/midi');

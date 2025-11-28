@@ -284,11 +284,82 @@ $pageTitle = 'Edit Project';
         .midi-file-actions {
             display: flex;
             gap: 0.5rem;
+            position: relative;
         }
 
         .btn-small {
             padding: 0.5rem 1rem;
             font-size: 0.875rem;
+        }
+
+        /* File Actions Dropdown */
+        .file-menu {
+            position: relative;
+        }
+
+        .file-menu-btn {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            cursor: pointer;
+            padding: 0.5rem 0.75rem;
+            color: #4b5563;
+            font-size: 1.25rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+
+        .file-menu-btn:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+            color: #1f2937;
+        }
+
+        .file-menu-dropdown {
+            position: absolute;
+            top: calc(100% + 0.25rem);
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 160px;
+            display: none;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .file-menu-dropdown.active {
+            display: block;
+        }
+
+        .file-menu-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.9375rem;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .file-menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-menu-item:hover {
+            background: #f9fafb;
+        }
+
+        .file-menu-item.danger {
+            color: #ef4444;
+        }
+
+        .file-menu-item.danger:hover {
+            background: #fef2f2;
         }
 
         .empty-state {
@@ -570,6 +641,171 @@ $pageTitle = 'Edit Project';
                 flex-direction: column;
             }
         }
+
+        /* Rename Modal */
+        .rename-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .rename-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rename-modal-content {
+            background-color: white;
+            margin: auto;
+            padding: 0;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 450px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .rename-modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rename-modal-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .rename-modal-close {
+            background: none;
+            border: none;
+            font-size: 1.75rem;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .rename-modal-close:hover {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .rename-modal-body {
+            padding: 1.5rem;
+        }
+
+        .rename-input-group {
+            margin-bottom: 1rem;
+        }
+
+        .rename-input-label {
+            display: block;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .rename-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .rename-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .rename-input.error {
+            border-color: #ef4444;
+        }
+
+        .rename-input.error:focus {
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .rename-error {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .rename-error.visible {
+            display: block;
+        }
+
+        .rename-hint {
+            color: #6b7280;
+            font-size: 0.8125rem;
+            margin-top: 0.5rem;
+        }
+
+        .rename-char-count {
+            text-align: right;
+            color: #9ca3af;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .rename-char-count.warning {
+            color: #f59e0b;
+        }
+
+        .rename-char-count.danger {
+            color: #ef4444;
+        }
+
+        .rename-modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            padding-top: 0.5rem;
+        }
+
+        .rename-modal-actions .btn {
+            min-width: 100px;
+        }
+
+        @media (max-width: 768px) {
+            .rename-modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+
+            .rename-modal-actions {
+                flex-direction: column-reverse;
+            }
+
+            .rename-modal-actions .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -662,38 +898,57 @@ $pageTitle = 'Edit Project';
                     <?php foreach ($midiFiles as $midiFile): 
                         // Format file type display name
                         $displayType = $midiFile['file_type'];
-                        if ($midiFile['file_type'] === 'uploaded_chords') {
-                            // Extract number from filename
-                            if (preg_match('/_uploaded_chords_(\d+)\.mid$/', $midiFile['file_path'], $matches)) {
-                                $displayType = 'Uploaded Chords ' . $matches[1];
-                            } else {
-                                $displayType = 'Uploaded Chords';
-                            }
-                        } elseif ($midiFile['file_type'] === 'simple_chords') {
-                            $displayType = 'Simple Chords';
-                        } elseif ($midiFile['file_type'] === 'complex_chords') {
-                            $displayType = 'Complex Chords';
-                        } elseif ($midiFile['file_type'] === 'bass') {
-                            $displayType = 'Bass';
+                        $fileNumber = '';
+                        
+                        // Extract number from filename for all types
+                        if (preg_match('/_(\d+)\.mid$/', $midiFile['file_path'], $matches)) {
+                            $fileNumber = $matches[1];
                         }
+                        
+                        if ($midiFile['file_type'] === 'uploaded_chords') {
+                            $displayType = 'Uploaded Chords ' . $fileNumber;
+                        } elseif ($midiFile['file_type'] === 'simple_chords') {
+                            $displayType = 'Simple Chords ' . $fileNumber;
+                        } elseif ($midiFile['file_type'] === 'complex_chords') {
+                            $displayType = 'Complex Chords ' . $fileNumber;
+                        } elseif ($midiFile['file_type'] === 'bass') {
+                            $displayType = 'Bass ' . $fileNumber;
+                        }
+                        
+                        // Use custom display name if set
+                        $customName = !empty($midiFile['display_name']) ? $midiFile['display_name'] : '';
+                        $shownName = $customName ?: $displayType;
                     ?>
                         <div class="midi-file-item" data-file-id="<?php echo $midiFile['id']; ?>">
                             <div class="midi-file-info">
-                                <div class="midi-file-type"><?php echo escape($displayType); ?></div>
+                                <div class="midi-file-type"><?php echo escape($shownName); ?></div>
                                 <div class="midi-file-date">
                                     Created: <?php echo date('M j, Y g:i A', strtotime($midiFile['created_at'])); ?>
+                                    <?php if ($customName): ?>
+                                        <span style="color: #9ca3af; margin-left: 0.5rem;">(<?php echo escape($displayType); ?>)</span>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="midi-file-actions">
-                                <a href="<?php echo url('/dashboard/download-midi.php?id=' . $midiFile['id']); ?>" 
-                                   class="btn btn-secondary btn-small">
-                                    Download
-                                </a>
-                                <button type="button" 
-                                        class="btn btn-danger btn-small" 
-                                        onclick="deleteMidiFile(<?php echo $midiFile['id']; ?>, '<?php echo addslashes($displayType); ?>')">
-                                    Delete
-                                </button>
+                                <div class="file-menu">
+                                    <button type="button" class="file-menu-btn" onclick="toggleFileMenu(event, <?php echo $midiFile['id']; ?>)" title="Actions">
+                                        ⋮
+                                    </button>
+                                    <div class="file-menu-dropdown" id="file-menu-<?php echo $midiFile['id']; ?>">
+                                        <a href="<?php echo url('/dashboard/download-midi.php?id=' . $midiFile['id']); ?>" 
+                                           class="file-menu-item">
+                                            Download
+                                        </a>
+                                        <div class="file-menu-item" 
+                                             onclick="openRenameModal(<?php echo $midiFile['id']; ?>, '<?php echo addslashes($customName ?: $displayType); ?>', '<?php echo addslashes($displayType); ?>')">
+                                            Rename
+                                        </div>
+                                        <div class="file-menu-item danger" 
+                                             onclick="deleteMidiFile(<?php echo $midiFile['id']; ?>, '<?php echo addslashes($shownName); ?>')">
+                                            Delete
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -726,6 +981,39 @@ $pageTitle = 'Edit Project';
         </div>
     </div>
 
+    <!-- Rename File Modal -->
+    <div id="renameModal" class="rename-modal">
+        <div class="rename-modal-content">
+            <div class="rename-modal-header">
+                <h3>Rename File</h3>
+                <button class="rename-modal-close" onclick="closeRenameModal()">&times;</button>
+            </div>
+            <div class="rename-modal-body">
+                <div class="rename-input-group">
+                    <label class="rename-input-label" for="renameInput">Display Name</label>
+                    <input type="text" 
+                           id="renameInput" 
+                           class="rename-input" 
+                           placeholder="Enter a custom name..."
+                           maxlength="50"
+                           oninput="updateCharCount()">
+                    <div id="renameError" class="rename-error"></div>
+                    <div id="renameCharCount" class="rename-char-count">0 / 50</div>
+                    <div class="rename-hint">
+                        Leave empty to use the default name.<br>
+                        Cannot contain: / \ : * ? " &lt; &gt; |
+                    </div>
+                </div>
+                <input type="hidden" id="renameFileId" value="">
+                <input type="hidden" id="renameDefaultName" value="">
+                <div class="rename-modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeRenameModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="submitRename()" id="renameSubmitBtn">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function dismissFlash(button) {
             const flashMessage = button.closest('.flash-message');
@@ -734,6 +1022,29 @@ $pageTitle = 'Edit Project';
                 flashMessage.remove();
             }, 300);
         }
+
+        // File Menu functions
+        function toggleFileMenu(event, fileId) {
+            event.stopPropagation();
+            
+            // Close all other file menus
+            document.querySelectorAll('.file-menu-dropdown').forEach(dropdown => {
+                dropdown.classList.remove('active');
+            });
+            
+            // Toggle this one
+            const dropdown = document.getElementById(`file-menu-${fileId}`);
+            dropdown.classList.toggle('active');
+        }
+
+        // Close file menus when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.file-menu')) {
+                document.querySelectorAll('.file-menu-dropdown').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+            }
+        });
 
         // Modal functions
         function openChordStyleModal() {
@@ -751,18 +1062,182 @@ $pageTitle = 'Edit Project';
             generateMidi(chordType);
         }
 
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('chordStyleModal');
-            if (event.target === modal) {
-                closeChordStyleModal();
+        // Rename Modal functions
+        function openRenameModal(fileId, currentName, defaultName) {
+            // Close file menu first
+            document.querySelectorAll('.file-menu-dropdown').forEach(dropdown => {
+                dropdown.classList.remove('active');
+            });
+            
+            const modal = document.getElementById('renameModal');
+            const input = document.getElementById('renameInput');
+            const fileIdInput = document.getElementById('renameFileId');
+            const defaultNameInput = document.getElementById('renameDefaultName');
+            const errorDiv = document.getElementById('renameError');
+            
+            // Set values
+            fileIdInput.value = fileId;
+            defaultNameInput.value = defaultName;
+            input.value = currentName === defaultName ? '' : currentName;
+            input.classList.remove('error');
+            errorDiv.classList.remove('visible');
+            errorDiv.textContent = '';
+            
+            // Update char count
+            updateCharCount();
+            
+            // Show modal
+            modal.classList.add('active');
+            
+            // Focus input after animation
+            setTimeout(() => input.focus(), 100);
+        }
+
+        function closeRenameModal() {
+            const modal = document.getElementById('renameModal');
+            modal.classList.remove('active');
+        }
+
+        function updateCharCount() {
+            const input = document.getElementById('renameInput');
+            const countDiv = document.getElementById('renameCharCount');
+            const length = input.value.length;
+            
+            countDiv.textContent = `${length} / 50`;
+            countDiv.classList.remove('warning', 'danger');
+            
+            if (length >= 50) {
+                countDiv.classList.add('danger');
+            } else if (length >= 40) {
+                countDiv.classList.add('warning');
             }
         }
 
-        // Close modal with ESC key
+        function validateRename(name) {
+            name = name.trim();
+            
+            if (name.length > 50) {
+                return { valid: false, error: 'Name must be 50 characters or less' };
+            }
+            
+            // Check for blocked characters: /\:*?"<>|
+            if (/[\/\\:*?"<>|]/.test(name)) {
+                return { valid: false, error: 'Name cannot contain / \\ : * ? " < > |' };
+            }
+            
+            return { valid: true, error: null };
+        }
+
+        async function submitRename() {
+            const input = document.getElementById('renameInput');
+            const fileId = document.getElementById('renameFileId').value;
+            const defaultName = document.getElementById('renameDefaultName').value;
+            const errorDiv = document.getElementById('renameError');
+            const submitBtn = document.getElementById('renameSubmitBtn');
+            
+            const displayName = input.value.trim();
+            
+            // Validate
+            const validation = validateRename(displayName);
+            if (!validation.valid) {
+                input.classList.add('error');
+                errorDiv.textContent = validation.error;
+                errorDiv.classList.add('visible');
+                return;
+            }
+            
+            // Clear errors
+            input.classList.remove('error');
+            errorDiv.classList.remove('visible');
+            
+            // Disable button
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span>';
+            
+            try {
+                const response = await fetch('<?php echo url("/dashboard/rename-midi.php"); ?>', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        file_id: parseInt(fileId),
+                        display_name: displayName
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Update the display in the list
+                    const fileItem = document.querySelector(`[data-file-id="${fileId}"]`);
+                    if (fileItem) {
+                        const typeDiv = fileItem.querySelector('.midi-file-type');
+                        const dateDiv = fileItem.querySelector('.midi-file-date');
+                        
+                        // Update display name
+                        typeDiv.textContent = displayName || defaultName;
+                        
+                        // Update/remove the default name indicator
+                        const existingIndicator = dateDiv.querySelector('span');
+                        if (displayName && displayName !== defaultName) {
+                            if (existingIndicator) {
+                                existingIndicator.textContent = `(${defaultName})`;
+                            } else {
+                                const indicator = document.createElement('span');
+                                indicator.style.cssText = 'color: #9ca3af; margin-left: 0.5rem;';
+                                indicator.textContent = `(${defaultName})`;
+                                dateDiv.appendChild(indicator);
+                            }
+                        } else if (existingIndicator) {
+                            existingIndicator.remove();
+                        }
+                    }
+                    
+                    closeRenameModal();
+                } else {
+                    input.classList.add('error');
+                    errorDiv.textContent = data.error || 'Failed to rename file';
+                    errorDiv.classList.add('visible');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                input.classList.add('error');
+                errorDiv.textContent = 'Failed to rename file. Please try again.';
+                errorDiv.classList.add('visible');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const chordModal = document.getElementById('chordStyleModal');
+            const renameModal = document.getElementById('renameModal');
+            
+            if (event.target === chordModal) {
+                closeChordStyleModal();
+            }
+            if (event.target === renameModal) {
+                closeRenameModal();
+            }
+        }
+
+        // Close modals with ESC key
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeChordStyleModal();
+                closeRenameModal();
+            }
+        });
+
+        // Submit rename on Enter
+        document.getElementById('renameInput').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                submitRename();
             }
         });
 

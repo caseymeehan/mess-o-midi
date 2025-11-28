@@ -194,9 +194,15 @@ class MidiGenerator {
      */
     public function generateBasslineForProject($userId, $projectId, $options = []) {
         try {
-            // Generate filename based on user, project, and timestamp
-            $timestamp = time();
-            $filename = "{$userId}_{$projectId}_bass_{$timestamp}.mid";
+            // Store MIDI file metadata in database
+            require_once __DIR__ . '/Projects.php';
+            $projectsManager = new Projects();
+            
+            // Get next sequential number for this file type
+            $nextNumber = $projectsManager->getNextFileNumber($projectId, 'bass');
+            
+            // Generate filename based on user, project, and sequential number
+            $filename = "{$userId}_{$projectId}_bass_{$nextNumber}.mid";
             
             // Generate the MIDI file
             $result = $this->generateBassline($filename, $options);
@@ -204,10 +210,6 @@ class MidiGenerator {
             if (!$result['success']) {
                 return $result;
             }
-            
-            // Store MIDI file metadata in database
-            require_once __DIR__ . '/Projects.php';
-            $projectsManager = new Projects();
             
             // Prepare parameters JSON
             $parameters = json_encode([
@@ -231,7 +233,8 @@ class MidiGenerator {
                 'success' => true,
                 'file_id' => $fileId,
                 'filepath' => $result['filepath'],
-                'filename' => $result['filename']
+                'filename' => $result['filename'],
+                'file_number' => $nextNumber
             ];
             
         } catch (Exception $e) {
@@ -253,9 +256,15 @@ class MidiGenerator {
      */
     public function generateComplexChordsForProject($userId, $projectId, $options = []) {
         try {
-            // Generate filename based on user, project, and timestamp
-            $timestamp = time();
-            $filename = "{$userId}_{$projectId}_complex_chords_{$timestamp}.mid";
+            // Store MIDI file metadata in database
+            require_once __DIR__ . '/Projects.php';
+            $projectsManager = new Projects();
+            
+            // Get next sequential number for this file type
+            $nextNumber = $projectsManager->getNextFileNumber($projectId, 'complex_chords');
+            
+            // Generate filename based on user, project, and sequential number
+            $filename = "{$userId}_{$projectId}_complex_chords_{$nextNumber}.mid";
             
             // Generate the MIDI file
             $result = $this->generateComplexChords($filename, $options);
@@ -263,10 +272,6 @@ class MidiGenerator {
             if (!$result['success']) {
                 return $result;
             }
-            
-            // Store MIDI file metadata in database
-            require_once __DIR__ . '/Projects.php';
-            $projectsManager = new Projects();
             
             // Prepare parameters JSON
             $parameters = json_encode([
@@ -291,7 +296,8 @@ class MidiGenerator {
                 'success' => true,
                 'file_id' => $fileId,
                 'filepath' => $result['filepath'],
-                'filename' => $result['filename']
+                'filename' => $result['filename'],
+                'file_number' => $nextNumber
             ];
             
         } catch (Exception $e) {
@@ -313,9 +319,15 @@ class MidiGenerator {
      */
     public function generateSimpleChordsForProject($userId, $projectId, $options = []) {
         try {
-            // Generate filename based on user, project, and timestamp
-            $timestamp = time();
-            $filename = "{$userId}_{$projectId}_simple_chords_{$timestamp}.mid";
+            // Store MIDI file metadata in database
+            require_once __DIR__ . '/Projects.php';
+            $projectsManager = new Projects();
+            
+            // Get next sequential number for this file type
+            $nextNumber = $projectsManager->getNextFileNumber($projectId, 'simple_chords');
+            
+            // Generate filename based on user, project, and sequential number
+            $filename = "{$userId}_{$projectId}_simple_chords_{$nextNumber}.mid";
             
             // Generate the MIDI file
             $result = $this->generateSimpleChords($filename, $options);
@@ -323,10 +335,6 @@ class MidiGenerator {
             if (!$result['success']) {
                 return $result;
             }
-            
-            // Store MIDI file metadata in database
-            require_once __DIR__ . '/Projects.php';
-            $projectsManager = new Projects();
             
             // Prepare parameters JSON
             $parameters = json_encode([
@@ -351,7 +359,8 @@ class MidiGenerator {
                 'success' => true,
                 'file_id' => $fileId,
                 'filepath' => $result['filepath'],
-                'filename' => $result['filename']
+                'filename' => $result['filename'],
+                'file_number' => $nextNumber
             ];
             
         } catch (Exception $e) {

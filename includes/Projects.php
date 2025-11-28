@@ -247,5 +247,100 @@ class Projects {
             ['id' => $midiFileId]
         );
     }
+    
+    /**
+     * Get the next sequential number for a file type in a project
+     * @param int $projectId
+     * @param string $fileType
+     * @return int
+     */
+    public function getNextFileNumber($projectId, $fileType) {
+        $query = "SELECT file_path FROM midi_files WHERE project_id = :project_id AND file_type = :file_type";
+        $files = $this->db->fetchAll($query, [
+            'project_id' => $projectId,
+            'file_type' => $fileType
+        ]);
+        
+        $maxNumber = 0;
+        
+        // Pattern to extract number from filename: {userId}_{projectId}_{type}_{number}.mid
+        $pattern = '/_(\\d+)\\.mid$/';
+        
+        foreach ($files as $file) {
+            if (preg_match($pattern, $file['file_path'], $matches)) {
+                $number = (int)$matches[1];
+                if ($number > $maxNumber) {
+                    $maxNumber = $number;
+                }
+            }
+        }
+        
+        return $maxNumber + 1;
+    }
+    
+    /**
+     * Update the display name of a MIDI file
+     * @param int $midiFileId
+     * @param int $userId (to ensure user owns the project)
+     * @param string $displayName (max 50 chars, sanitized)
+     * @return bool
+     */
+    public function updateMidiDisplayName($midiFileId, $userId, $displayName) {
+        // First get the MIDI file and verify the project belongs to the user
+        $midiFile = $this->getMidiFile($midiFileId);
+        if (!$midiFile) {
+            return false;
+        }
+        
+        $project = $this->getProject($midiFile['project_id'], $userId);
+        if (!$project) {
+            return false;
+        }
+        
+        // Validate display name
+        $displayName = trim($displayName);
+        
+        // Check length (max 50 characters)
+        if (strlen($displayName) > 50) {
+            return false;
+        }
+        
+        // Block dangerous characters: /\:*?"<>|
+        if (preg_match('/[\/\\\\:*?"<>|]/', $displayName)) {
+            return false;
+        }
+        
+        // Allow empty string to clear the display name (reset to default)
+        if ($displayName === '') {
+            $displayName = null;
+        }
+        
+        return $this->db->update('midi_files', 
+            ['display_name' => $displayName],
+            'id = :id',
+            ['id' => $midiFileId]
+        );
+    }
+    
+    /**
+     * Validate a display name for MIDI files
+     * @param string $displayName
+     * @return array ['valid' => bool, 'error' => string|null]
+     */
+    public static function validateDisplayName($displayName) {
+        $displayName = trim($displayName);
+        
+        // Check length
+        if (strlen($displayName) > 50) {
+            return ['valid' => false, 'error' => 'Name must be 50 characters or less'];
+        }
+        
+        // Check for blocked characters
+        if (preg_match('/[\/\\\\:*?"<>|]/', $displayName)) {
+            return ['valid' => false, 'error' => 'Name cannot contain / \\ : * ? " < > |'];
+        }
+        
+        return ['valid' => true, 'error' => null];
+    }
 }
 

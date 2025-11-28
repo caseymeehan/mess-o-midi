@@ -7,6 +7,10 @@ set -e
 
 echo "🚀 Starting Mess o Midi Production Services..."
 
+# Run database migrations
+echo "📦 Running database migrations..."
+php database/migrate_display_name.php
+
 # Save Railway's PORT for PHP (Railway uses this for routing)
 PHP_PORT=${PORT:-8080}
 
